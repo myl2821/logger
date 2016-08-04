@@ -45,7 +45,7 @@ impl Default for Format {
             }
         }
 
-        Format::new("@[bold]{method}@ {uri} @[bold]->@ @[C]{status}@ ({response-time})",
+        Format::new("[{timestamp}] @[bold]{method}@ {uri} @[bold]->@ @[C]{status}@ ({response-time})",
            vec![FunctionColor(status_color)], vec![]).unwrap()
     }
 }
@@ -53,7 +53,7 @@ impl Default for Format {
 impl Format {
     // TODO: Document the color/attribute tags.
     /// Create a `Format` from a format string, which can contain the fields
-    /// `{method}`, `{uri}`, `{status}`, `{response-time}`, `{ip-addr}` and `timestamp`.
+    /// `{method}`, `{uri}`, `{status}`, `{response-time}`, `{ip-addr}` and `{timestamp}`.
     ///
     /// Returns `None` if the format string syntax is incorrect.
     ///
