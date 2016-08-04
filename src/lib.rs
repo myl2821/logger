@@ -4,6 +4,7 @@
 
 extern crate iron;
 extern crate term;
+extern crate time;
 
 use iron::{AfterMiddleware, BeforeMiddleware, IronResult, IronError, Request, Response, status};
 use iron::typemap::Key;
@@ -11,9 +12,8 @@ use term::{StdoutTerminal, color, stdout};
 
 use std::io;
 use std::io::Write;
-use std::time;
 
-use format::FormatText::{Str, Method, URI, Status, ResponseTime, RemoteAddr};
+use format::FormatText::{Str, Method, URI, Status, ResponseTime, RemoteAddr, TimeStamp};
 use format::FormatColor::{ConstantColor, FunctionColor};
 use format::FormatAttr::{ConstantAttrs, FunctionAttrs};
 use format::{Format, FormatText};
@@ -48,11 +48,11 @@ impl Logger {
 }
 
 struct StartTime;
-impl Key for StartTime { type Value = time::Instant; }
+impl Key for StartTime { type Value = std::time::Instant; }
 
 impl Logger {
     fn initialise(&self, req: &mut Request) {
-        req.extensions.insert::<StartTime>(time::Instant::now());
+        req.extensions.insert::<StartTime>(std::time::Instant::now());
     }
 
     fn log(&self, req: &mut Request, res: &Response) -> IronResult<()> {
@@ -79,7 +79,8 @@ impl Logger {
                     URI => format!("{}", req.url),
                     Status => format!("{}", res.status.unwrap()),
                     ResponseTime => format!("{} ms", response_time_ms),
-                    RemoteAddr => format!("{}", req.remote_addr)
+                    RemoteAddr => format!("{}", req.remote_addr),
+                    TimeStamp => format!("{}", time::now().strftime("%Y-%m-%d %H:%M:%S").unwrap())
                 }
             };
 
